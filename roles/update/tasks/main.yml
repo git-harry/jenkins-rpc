@@ -1,6 +1,8 @@
 ---
-- name: update apt cache
-  apt: update_cache=yes
-
 - name: update packages
-  apt: upgrade=safe
+  apt:
+    upgrade: safe
+    update_cache: yes
+    cache_valid_time: 600
+  register: pkgs
+  until: pkgs|success

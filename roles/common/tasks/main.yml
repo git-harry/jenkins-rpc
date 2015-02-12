@@ -1,23 +1,38 @@
 ---
-- name: update apt cache
-  apt: update_cache=yes cache_valid_time=3600
-
 - name: install packages that are for all hosts
-  apt: pkg={{ item }} state=present
+  apt:
+    pkg: {{ item }}
+    state: present
+    update_cache: yes
+    cache_valid_time: 600
   with_items: all
   tags:
     - deployment
     - target
+  register: pkgs
+  until: pkgs|success
 
 - name: install packages that are for deployment hosts
-  apt: pkg={{ item }} state=present
+  apt:
+    pkg: {{ item }}
+    state: present
+    update_cache: yes
+    cache_valid_time: 600
   with_items: deployment
   tags: deployment
+  register: pkgs
+  until: pkgs|success
 
 - name: install packages that are for target hosts
-  apt: pkg={{ item }} state=present
+  apt:
+    pkg: {{ item }}
+    state: present
+    update_cache: yes
+    cache_valid_time: 600
   with_items: target
   tags: target
+  register: pkgs
+  until: pkgs|success
 
 - name: install common pip packages
   pip: name={{ item }} state=present

@@ -1,5 +1,11 @@
 - name: install bonding / bridge dependencies
-  apt: pkg={{ item }} state=installed
+  apt:
+    pkg: {{ item }}
+    state: present
+    update_cache: yes
+    cache_valid_time: 600
+  register: pkgs
+  until: pkgs|success
   with_items:
     - ifenslave-2.6
     - bridge-utils

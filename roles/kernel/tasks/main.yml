@@ -1,12 +1,16 @@
 ---
-- name: update apt cache
-  when: ansible_distribution == "Debian" or ansible_distribution == "Ubuntu"
-  apt: update_cache=yes
-
 - name: install latest generic kernel headers / image
   when: ansible_distribution == "Debian" or ansible_distribution == "Ubuntu"
-  apt: name=linux-headers-generic state=present
-  apt: name=linux-image-generic state=present
+  apt:
+    pkg: {{ item }}
+    state: present
+    update_cache: yes
+    cache_valid_time: 600
+  with_items:
+    - linux-headers-generic
+    - linux-image-generic
+  register: pkgs
+  until: pkgs|success
 
 - name: remove old raring kernel headers
   when: ansible_distribution == "Debian" or ansible_distribution == "Ubuntu"

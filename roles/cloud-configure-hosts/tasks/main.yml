@@ -17,11 +17,28 @@
 
 - name: Updating packages
   tags: packages
-  apt: update_cache=yes upgrade=dist
+  apt:
+    update_cache: yes
+    cache_valid_time: 600
+    upgrade: dist
+  register: pkgs
+  until: pkgs|success
 
 - name: Install packages
   tags: packages
-  apt: pkg=bridge-utils,git,python,python-dev,python-pip state=present
+  apt:
+    pkg: {{ item }}
+    state: present
+    update_cache: yes
+    cache_valid_time: 600
+  register: pkgs
+  until: pkgs|success
+  with_items:
+    - bridge-utils
+    - git
+    - python
+    - python-dev
+    - python-pip
 
 - name: Source interfaces.d configs
   tags: network

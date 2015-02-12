@@ -1,18 +1,38 @@
 ---
-- name: Update package cache
-  apt: update_cache=yes
-
 - name: Perform dist-upgrade
-  apt: upgrade=dist
+  apt:
+    upgrade: dist
+    update_cache: yes
+    cache_valid_time: 600
+  register: pkgs
+  until: pkgs|success
 
 - name: Install lldpd
-  apt: pkg=lldpd state=latest
+  apt:
+    pkg: lldpd
+    state: latest
+    update_cache: yes
+    cache_valid_time: 600
+  register: pkgs
+  until: pkgs|success
 
 - name: Install vlan
-  apt: pkg=vlan state=latest
+  apt:
+    pkg: vlan
+    state: latest
+    update_cache: yes
+    cache_valid_time: 600
+  register: pkgs
+  until: pkgs|success
 
 - name: Install bridge-utils
-  apt: pkg=bridge-utils state=latest
+  apt:
+    pkg: bridge-utils
+    state: latest
+    update_cache: yes
+    cache_valid_time: 600
+  register: pkgs
+  until: pkgs|success
 
 - name: Install pip
   tags: rpc
